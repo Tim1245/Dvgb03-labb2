@@ -31,11 +31,18 @@ class BST(bt.BT):
         return 0
 
     def height(self):
-        '''
-        Returns the height of the tree.
-        '''
-        logging.info("TODO@src/bst.py: implement height()")
-        return 0
+        if self.is_empty():
+            return 0
+        else :
+            # Compute the depth of each subtree
+            lDepth = self.lc().height()
+            rDepth = self.rc().height()
+    
+            # Use the larger one
+            if (lDepth > rDepth):
+                return lDepth+1
+            else:
+                return rDepth+1
 
     def preorder(self):
         '''
@@ -59,21 +66,30 @@ class BST(bt.BT):
         log.info("TODO@src/bst.py: implement postorder()")
         return []
 
+    
+        
+
     def bfs_order_star(self):
+        savedHeight = self.height()
+        returnArr = []
+
+        def returnCurrentLevel(self, i):
+            if i == 1:
+                if self is None:
+                    returnArr.append(None)
+                else:
+                    returnArr.append(self.value())
+            elif i > 1:
+                returnCurrentLevel(self.lc(),i-1)
+                returnCurrentLevel(self.rc(),i-1)
+
+        for i in range(1,savedHeight+1):
+            returnCurrentLevel(self, i)
         '''
         Returns a list of all members in breadth-first search* order, which
         means that empty nodes are denoted by "stars" (here the value None).
-
-        For example, consider the following tree `t`:
-                    10
-              5           15
-           *     *     *     20
-
-        The output of t.bfs_order_star() should be:
-        [ 10, 5, 15, None, None, None, 20 ]
         '''
-        log.info("TODO@src/bst.py: implement bfs_order_star()")
-        return []
+        return returnArr
 
     def add(self, v):
         '''
