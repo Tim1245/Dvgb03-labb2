@@ -17,11 +17,21 @@ class BST(bt.BT):
             self.cons(BST(), BST())
 
     def is_member(self, v):
-        '''
-        Returns true if the value `v` is a member of the tree.
-        '''
-        logging.info("TODO@src/bst.py: implement is_member()")
-        return False
+     
+
+        if self.is_empty():
+            return False
+        
+        if self.value() == v:
+            return True
+ 
+        if self.value() < v:
+            return   self.rc().is_member(v)
+   
+        return self.lc().is_member(v)
+ 
+    
+    
 
     def size(self):
         if self.is_empty():
@@ -54,8 +64,9 @@ class BST(bt.BT):
         '''
         Returns a list of all members in inorder.
         '''
-        log.info("TODO@src/bst.py: implement inorder()")
-        return []
+        if self.is_empty():
+            return[]
+        return self.lc().inorder() + [self.value()]  + self.rc().inorder()
 
     def postorder(self):
         '''
