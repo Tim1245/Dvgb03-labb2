@@ -9,7 +9,7 @@ log = logging.getLogger(__name__)
 class BST(bt.BT):
     def __init__(self, value=None):
         '''
-        Initializes an empty tree if `value` is None, else a root with the
+        Initializes an empty tree if `value` is None, else a self with the
         specified `value` and two empty children.
         '''
         self.set_value(value)
@@ -80,28 +80,37 @@ class BST(bt.BT):
         
 
     def bfs_order_star(self):
-        savedHeight = self.height()
+        if self.is_empty():
+            return []
+
         returnArr = []
+        trueSize = (2**self.height())
+        temp = []
+        
+        
+        temp.append(self)
 
-        def returnCurrentLevel(self, i):
-            if i == 1:
-                if self is None:
-                    return
-                else:
-                    returnArr.append(self.value())
-            elif i > 1:
-                returnCurrentLevel(self.lc(),i-1)
-                returnCurrentLevel(self.rc(),i-1)
-            
-            if self is None:
-                returnArr.append(None)
+        while(len(temp)>0):
+            returnArr.append(temp[0].value())
+            node = temp.pop(0)
 
-        for i in range(1,savedHeight+1):
-            returnCurrentLevel(self, i)
-        '''
-        Returns a list of all members in breadth-first search* order, which
-        means that empty nodes are denoted by "stars" (here the value None).
-        '''
+            if node.lc() is not None:
+                temp.append(node.lc())
+            if node.rc() is not None:
+                temp.append(node.rc())
+
+        for i in range (0, trueSize-1):
+            if returnArr[i] == None or returnArr[i] == '*':
+                returnArr.insert((i*2)+1, None)
+                returnArr.insert((i*2)+2, None)
+
+        for i, v in enumerate(returnArr):
+            if v is '*':
+                returnArr[i] = None
+            if(len(returnArr) > trueSize-1):
+                returnArr.pop()
+
+
         return returnArr
 
     def add(self, v):
@@ -118,12 +127,67 @@ class BST(bt.BT):
             return self.cons(self.lc(), self.rc().add(v))
         return self
     
+    def minValueNode(node, dir):
+        current = node
+    
+        # loop down to find the leftmost leaf
+        if dir == "left":
+            while(not current.lc().is_empty()):
+                current = current.lc()
+        elif dir == "right":
+            while(not current.rc().is_empty()):
+                current = current.rc()
+    
+        return current
+    
     def delete(self, v):
-        '''
-        Removes the value `v` from the tree and returns the new (updated) tree.
-        If `v` is a non-member, the same tree is returned without modification.
-        '''
-        log.info("TODO@src/bst.py: implement delete()")
+        # base case: the key is not found in the tree
+        if self.is_empty():
+            return self
+        if v is None:
+            return self
+    
+        # if the given key is less than the self node, recur for the left subtree
+        if v < self.value():
+            self.set_lc(self.lc().delete(v))
+    
+        # If the kye to be delete
+        # is greater than the root's key
+        # then it lies in right subtree
+        elif(v > self.value()):
+            self.set_rc(self.rc().delete(v))
+    
+        # key found
+        else:
+    
+            if self.lc().is_empty():
+                temp = self.rc()
+                self = None
+                return temp
+            
+            elif self.rc().is_empty():
+                temp = self.lc()
+                self = None
+                return temp
+
+            rightH = self.rc().height()
+            leftH = self.lc().height()
+
+            if(rightH > leftH):
+                temp = self.rc().minValueNode("left")
+                self.set_value(temp.value())
+                self.set_rc(self.rc().delete(temp.value()))
+            else:
+                temp = self.lc().minValueNode("right")
+                self.set_value(temp.value())
+                self.set_lc(self.lc().delete(temp.value()))
+            
+    
+            self.set_value(temp.value())
+ 
+            # Delete the inorder successor
+            self.set_rc(self.rc().delete(temp.value()))
+    
         return self
 
 if __name__ == "__main__":
