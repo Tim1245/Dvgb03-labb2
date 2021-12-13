@@ -31,21 +31,29 @@ class AVL(bst.BST):
         method applies one of the following if necessary: slr, srr, dlr, drr.
         '''
         log.info("TODO@src/avl.py: implement balance()")
-        self.slr().srr().dlr().drr() # TODO: apply these methods correctly
+        self.slr() # TODO: apply these methods correctly
         return self
 
     def slr(self):
         '''
         Performs a single-left rotate around the node rooted at `self`.
         '''
-        log.info("TODO@src/avl.py: implement slr()")
+        self = self.rc()
+        b = self.lc()
+        self.set_lc(self)
+        self.set_rc(b)
+        self.h = 1 + max(self.height(self.lc()), self.height(self.rc()))
         return self
 
     def srr(self):
         '''
         Performs a single-right rotate around the node rooted at `self`.
         '''
-        log.info("TODO@src/avl.py: implement srr()")
+        self = self.lc()
+        b = self.rc()
+        self.set_rc(self)
+        self.set_lc(b)
+        self.h = 1 + max(self.height(self.lc()), self.height(self.rc()))
         return self
 
     def dlr(self):

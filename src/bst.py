@@ -86,12 +86,15 @@ class BST(bt.BT):
         def returnCurrentLevel(self, i):
             if i == 1:
                 if self is None:
-                    returnArr.append(None)
+                    return
                 else:
                     returnArr.append(self.value())
             elif i > 1:
                 returnCurrentLevel(self.lc(),i-1)
                 returnCurrentLevel(self.rc(),i-1)
+            
+            if self is None:
+                returnArr.append(None)
 
         for i in range(1,savedHeight+1):
             returnCurrentLevel(self, i)
