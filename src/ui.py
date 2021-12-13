@@ -3,6 +3,8 @@
 import bst
 import avl
 import logging
+import os
+import math
 
 log = logging.getLogger(__name__)
 
@@ -185,12 +187,15 @@ class TerminalUI:
         '''
         tree = self._tree.bfs_order_star()
         treeHeight = self._tree.height()
-        print(" "*(treeHeight-1) + str(tree[0]))
+        baseWidth = os.get_terminal_size()
+        #print(" "*int(baseWidth.columns/(2**(treeHeight-1))) + str(tree[0]))
+        
 
-        for i in range(2, treeHeight+1):
-            print("\t"*(treeHeight-i), end='')
+        for i in range(1, treeHeight+1):
+            test = math.ceil(int((baseWidth.columns/(2**(i-1))/2)) - int((baseWidth.columns/(2**(treeHeight-1))/2)))
+            print(" "*test, end='')
             for j in range(2**(i-1), (2**(i-1))*2):
-                print("{}".format(str(tree[j-1]) if tree[j-1] is not None else "*"), end= ' ' if j % 2 else'  ')
+                print("{}".format(str(tree[j-1]) if tree[j-1] is not None else "*"), end=' '*int(baseWidth.columns/(2**(i-1))))
             print("")
 
 if __name__ == "__main__":

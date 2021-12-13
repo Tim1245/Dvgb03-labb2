@@ -17,8 +17,7 @@ class BST(bt.BT):
             self.cons(BST(), BST())
 
     def is_member(self, v):
-     
-
+        
         if self.is_empty():
             return False
         
