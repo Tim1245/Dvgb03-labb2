@@ -17,7 +17,9 @@ class BST(bt.BT):
             self.cons(BST(), BST())
 
     def is_member(self, v):
-        
+        '''
+        Returns true if the value `v` is a member of the tree.
+        '''
         if self.is_empty():
             return False
         
@@ -33,19 +35,25 @@ class BST(bt.BT):
     
 
     def size(self):
+        '''
+        Returns the number of nodes in the tree.
+        '''
         if self.is_empty():
             return 0
         return 1 + self.lc().size() + self.rc().size()
 
     def height(self):
+        '''
+        Returns the height of the tree.
+        '''
         if self.is_empty():
             return 0
         else :
-            # Compute the depth of each subtree
+            # Calculate depth of left and right subtree
             lDepth = self.lc().height()
             rDepth = self.rc().height()
     
-            # Use the larger one
+            # See which one is deeper and use that one
             if (lDepth > rDepth):
                 return lDepth+1
             else:
@@ -79,6 +87,18 @@ class BST(bt.BT):
         
 
     def bfs_order_star(self):
+        '''
+        Returns a list of all members in breadth-first search* order, which
+        means that empty nodes are denoted by "stars" (here the value None).
+
+        For example, consider the following tree `t`:
+                    10
+              5           15
+           *     *     *     20
+
+        The output of t.bfs_order_star() should be:
+        [ 10, 5, 15, None, None, None, 20 ]
+        '''
         if self.is_empty():
             return []
 
@@ -86,29 +106,25 @@ class BST(bt.BT):
         trueSize = (2**self.height())
         temp = []
         
-        
+        # Add root node to temp array
         temp.append(self)
 
+        # Loop while array is not empty
         while(len(temp)>0):
             returnArr.append(temp[0].value())
             node = temp.pop(0)
-
+            
+            # Add child to array if not empty
             if node.lc() is not None:
                 temp.append(node.lc())
             if node.rc() is not None:
                 temp.append(node.rc())
 
+        # Inserts None for each child at the correct index
         for i in range (0, trueSize-1):
-            if returnArr[i] == None or returnArr[i] == '*':
+            if returnArr[i] == None:
                 returnArr.insert((i*2)+1, None)
                 returnArr.insert((i*2)+2, None)
-
-        for i, v in enumerate(returnArr):
-            if v is '*':
-                returnArr[i] = None
-            if(len(returnArr) > trueSize-1):
-                returnArr.pop()
-
 
         return returnArr
 
@@ -126,44 +142,36 @@ class BST(bt.BT):
             return self.cons(self.lc(), self.rc().add(v))
         return self
     
-    def minValueNode(node, dir):
-        current = node
     
-        # loop down to find the leftmost leaf
-        if dir == "left":
-            while(not current.lc().is_empty()):
-                current = current.lc()
-        elif dir == "right":
-            while(not current.rc().is_empty()):
-                current = current.rc()
-    
-        return current
     
     def delete(self, v):
-        # base case: the key is not found in the tree
+        '''
+        Removes the value `v` from the tree and returns the new (updated) tree.
+        If `v` is a non-member, the same tree is returned without modification.
+        '''
         if self.is_empty():
             return self
         if v is None:
             return self
-    
-        # if the given key is less than the self node, recur for the left subtree
+
+        # If the value is less than current node, recur to the left
         if v < self.value():
             self.set_lc(self.lc().delete(v))
     
-        # If the kye to be delete
-        # is greater than the root's key
-        # then it lies in right subtree
+        # If the value is greater than current node, recur to the right
         elif(v > self.value()):
             self.set_rc(self.rc().delete(v))
     
-        # key found
+        # Value == self.value()
         else:
-    
+
+            # Removes self and returns self.rc()
             if self.lc().is_empty():
                 temp = self.rc()
                 self = None
                 return temp
             
+            # Removes self and returns self.lc()
             elif self.rc().is_empty():
                 temp = self.lc()
                 self = None
@@ -172,19 +180,31 @@ class BST(bt.BT):
             rightH = self.rc().height()
             leftH = self.lc().height()
 
+            # Returns deepest node in the given direction
+            def minValueNode(node, dir):
+                current = node
+            
+                if dir == "left":
+                    while(not current.lc().is_empty()):
+                        current = current.lc()
+                elif dir == "right":
+                    while(not current.rc().is_empty()):
+                        current = current.rc()
+            
+                return current
+
             if(rightH > leftH):
-                temp = self.rc().minValueNode("left")
+                temp = minValueNode(self.rc(),"left")
                 self.set_value(temp.value())
                 self.set_rc(self.rc().delete(temp.value()))
             else:
-                temp = self.lc().minValueNode("right")
+                temp = minValueNode(self.lc(),"right")
                 self.set_value(temp.value())
                 self.set_lc(self.lc().delete(temp.value()))
             
-    
             self.set_value(temp.value())
  
-            # Delete the inorder successor
+            # Remove and replace next node inorder
             self.set_rc(self.rc().delete(temp.value()))
     
         return self

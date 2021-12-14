@@ -17,17 +17,24 @@ class AVL(bst.BST):
             self.cons(AVL(), AVL())
 
     def delete(self, v):
+        '''
+        Calls the inherited BST.delete() method and overrides it by calling balance()
+        '''
         return bst.BST.delete(self, v).balance()
 
     def add(self, v):
         '''
         Example which shows how to override and call parent methods.  You
-        may remove this function and overide something else if you'd like.
+        may remove this function and override something else if you'd like.
         '''
         
         return bst.BST.add(self, v).balance()
 
     def balance(self):
+        '''
+        AVL-balances around the node rooted at `self`.  In other words, this
+        method applies one of the following if necessary: slr, srr, dlr, drr.
+        '''
 
         leftH = 0
         rightH = 0

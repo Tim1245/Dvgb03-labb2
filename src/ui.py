@@ -4,7 +4,6 @@ import bst
 import avl
 import logging
 import os
-import math
 
 log = logging.getLogger(__name__)
 
@@ -185,15 +184,18 @@ class TerminalUI:
         Shows a pretty 2D tree based on the output of bfs_order_star(). None
         values are are replaced by stars ("*").
         '''
+
         tree = self._tree.bfs_order_star()
         treeHeight = self._tree.height()
         baseWidth = os.get_terminal_size()
-        #print(" "*int(baseWidth.columns/(2**(treeHeight-1))) + str(tree[0]))
         
-
+        # Loops through each level
         for i in range(1, treeHeight+1):
-            test = math.ceil(int((baseWidth.columns/(2**(i-1))/2)) - int((baseWidth.columns/(2**(treeHeight-1))/2)))
+            # Prints space at the beginning of each level
+            test = int((baseWidth.columns/(2**(i-1))/2)) - int((baseWidth.columns/(2**(treeHeight-1))/2))
             print(" "*test, end='')
+
+            # Loops through and prints all elements for each level with correct spacing
             for j in range(2**(i-1), (2**(i-1))*2):
                 print("{}".format(str(tree[j-1]) if tree[j-1] is not None else "*"), end=' '*int(baseWidth.columns/(2**(i-1))))
             print("")
