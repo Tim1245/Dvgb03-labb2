@@ -46,26 +46,23 @@ class AVL(bst.BST):
 
         diff = abs(leftH - rightH)
 
-        #SLR OR DLR
+        # slr or dlr
         if diff >= 2:
             
             if self.lc().height() < self.rc().height():
-
-                #SLR
+                # slr
                 if self.rc().lc().height() <= self.rc().rc().height():
                     return self.slr()
-
-                #DLR
+                # dlr
                 else:
                     return self.dlr()
 
-            #SRR OR DRR
+            # srr or drr
             else:
-                #SRR
+                # srr
                 if self.lc().lc().height() >= self.lc().rc().height():
                     return self.srr()
-
-                #DRR
+                # drr
                 else:
                     return self.drr()
         else:

@@ -143,6 +143,22 @@ class BST(bt.BT):
         return self
     
     
+    def minValueNode(node, dir):
+        '''
+        Returns deepest node in the given direction
+        '''
+
+        current = node
+    
+        if dir == "left":
+            while(not current.lc().is_empty()):
+                current = current.lc()
+        elif dir == "right":
+            while(not current.rc().is_empty()):
+                current = current.rc()
+    
+        return current
+    
     
     def delete(self, v):
         '''
@@ -180,25 +196,12 @@ class BST(bt.BT):
             rightH = self.rc().height()
             leftH = self.lc().height()
 
-            # Returns deepest node in the given direction
-            def minValueNode(node, dir):
-                current = node
-            
-                if dir == "left":
-                    while(not current.lc().is_empty()):
-                        current = current.lc()
-                elif dir == "right":
-                    while(not current.rc().is_empty()):
-                        current = current.rc()
-            
-                return current
-
             if(rightH > leftH):
-                temp = minValueNode(self.rc(),"left")
+                temp = self.rc().minValueNode("left")
                 self.set_value(temp.value())
                 self.set_rc(self.rc().delete(temp.value()))
             else:
-                temp = minValueNode(self.lc(),"right")
+                temp = self.lc().minValueNode("right")
                 self.set_value(temp.value())
                 self.set_lc(self.lc().delete(temp.value()))
             
